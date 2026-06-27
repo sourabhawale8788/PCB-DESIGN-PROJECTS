@@ -1,0 +1,470 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.wrap{padding:1rem 0}
+.tabs{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
+.tab-btn{padding:6px 14px;border:0.5px solid var(--border-strong);border-radius:var(--radius);font-size:13px;cursor:pointer;background:var(--surface-1);color:var(--text-secondary);transition:all .15s}
+.tab-btn.active{background:var(--bg-accent);border-color:var(--border-accent);color:var(--text-accent);font-weight:500}
+.tab-panel{display:none}.tab-panel.active{display:block}
+h2{font-size:15px;font-weight:500;color:var(--text-primary);margin-bottom:.75rem}
+h3{font-size:13px;font-weight:500;color:var(--text-secondary);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.04em}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:1rem}
+th{text-align:left;padding:8px 10px;background:var(--surface-1);border-bottom:0.5px solid var(--border-strong);color:var(--text-muted);font-weight:500;font-size:12px}
+td{padding:7px 10px;border-bottom:0.5px solid var(--border);color:var(--text-primary);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500}
+.badge-blue{background:var(--bg-accent);color:var(--text-accent)}
+.badge-teal{background:#E1F5EE;color:#0F6E56}
+.badge-amber{background:#FAEEDA;color:#854F0B}
+.badge-red{background:#FCEBEB;color:#A32D2D}
+.badge-gray{background:var(--surface-1);color:var(--text-secondary);border:0.5px solid var(--border-strong)}
+@media(prefers-color-scheme:dark){
+  .badge-teal{background:#04342C;color:#9FE1CB}
+  .badge-amber{background:#412402;color:#FAC775}
+}
+.step-card{border:0.5px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:.75rem;background:var(--surface-2)}
+.step-card:hover{border-color:var(--border-strong)}
+.step-hdr{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;background:var(--bg-accent);color:var(--text-accent)}
+.step-title{font-size:14px;font-weight:500;color:var(--text-primary);flex:1}
+.step-subtitle{font-size:12px;color:var(--text-muted)}
+.chevron{font-size:14px;color:var(--text-muted);transition:transform .2s}
+.step-body{display:none;margin-top:.875rem;padding-top:.875rem;border-top:0.5px solid var(--border)}
+.step-body.open{display:block}
+.step-body ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.step-body li{font-size:13px;color:var(--text-primary);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.step-body li::before{content:"→";color:var(--text-accent);flex-shrink:0;margin-top:1px}
+code{background:var(--surface-1);border:0.5px solid var(--border);border-radius:4px;padding:1px 5px;font-family:var(--font-mono);font-size:12px;color:var(--text-primary)}
+.note{background:var(--bg-accent);border:0.5px solid var(--border-accent);border-radius:var(--radius);padding:.625rem .875rem;font-size:12px;color:var(--text-accent);margin-top:.75rem;line-height:1.5}
+.warn{background:var(--bg-warning);border:0.5px solid var(--border-warning);border-radius:var(--radius);padding:.625rem .875rem;font-size:12px;color:var(--text-warning);margin-top:.75rem;line-height:1.5}
+.net-tbl td:first-child{font-family:var(--font-mono);font-size:12px;color:var(--text-accent);font-weight:500}
+.layer-row{display:flex;gap:8px;align-items:center;padding:5px 0;border-bottom:0.5px solid var(--border);font-size:13px}
+.layer-row:last-child{border:none}
+.layer-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.ask-btn{display:inline-flex;align-items:center;gap:4px;margin-top:.875rem;padding:6px 14px;border:0.5px solid var(--border-strong);border-radius:var(--radius);font-size:13px;cursor:pointer;background:var(--surface-1);color:var(--text-secondary);transition:all .15s}
+.ask-btn:hover{border-color:var(--border-accent);color:var(--text-accent);background:var(--bg-accent)}
+</style>
+
+<div class="wrap">
+  <div style="margin-bottom:1.25rem">
+    <div style="font-size:18px;font-weight:500;color:var(--text-primary);margin-bottom:4px">Clap Switch — Altium PCB Guide</div>
+    <div style="font-size:13px;color:var(--text-muted)">NE555 + BC547 · 9V battery · LED output · beginner-friendly steps</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('components',this)">Components</button>
+    <button class="tab-btn" onclick="showTab('netlist',this)">Connections</button>
+    <button class="tab-btn" onclick="showTab('steps',this)">Altium Steps</button>
+    <button class="tab-btn" onclick="showTab('layers',this)">PCB Layers</button>
+  </div>
+
+  <!-- TAB 1: COMPONENTS -->
+  <div id="tab-components" class="tab-panel active">
+    <h2>Bill of Materials — Altium Component Names</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Ref</th><th>Value</th><th>Altium Library Part</th><th>Footprint</th><th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>R1</strong></td>
+          <td>100K Ω</td>
+          <td><code>Res2</code><br><span style="color:var(--text-muted);font-size:11px">Miscellaneous Devices</span></td>
+          <td>AXIAL-0.4</td>
+          <td><span class="badge badge-blue">Through-hole</span></td>
+        </tr>
+        <tr>
+          <td><strong>R2</strong></td>
+          <td>220 Ω</td>
+          <td><code>Res2</code></td>
+          <td>AXIAL-0.4</td>
+          <td>LED current limiter</td>
+        </tr>
+        <tr>
+          <td><strong>R3</strong></td>
+          <td>1K Ω</td>
+          <td><code>Res2</code></td>
+          <td>AXIAL-0.4</td>
+          <td>Base + reset bias</td>
+        </tr>
+        <tr>
+          <td><strong>R4</strong></td>
+          <td>47K Ω</td>
+          <td><code>Res2</code></td>
+          <td>AXIAL-0.4</td>
+          <td>MIC pull-up bias</td>
+        </tr>
+        <tr>
+          <td><strong>C1</strong></td>
+          <td>10µF / 16V</td>
+          <td><code>Cap Pol2</code><br><span style="color:var(--text-muted);font-size:11px">Miscellaneous Devices</span></td>
+          <td>RB.2/.4</td>
+          <td><span class="badge badge-amber">Electrolytic, polar</span></td>
+        </tr>
+        <tr>
+          <td><strong>Q1</strong></td>
+          <td>BC547</td>
+          <td><code>BC547</code><br><span style="color:var(--text-muted);font-size:11px">Transistor NPN · search "BC547"</span></td>
+          <td>TO-92A</td>
+          <td>NPN, B–C–E check pinout</td>
+        </tr>
+        <tr>
+          <td><strong>U1</strong></td>
+          <td>NE555</td>
+          <td><code>NE555N</code> or <code>LM555CN</code><br><span style="color:var(--text-muted);font-size:11px">Linear · Timer</span></td>
+          <td>DIP-8</td>
+          <td><span class="badge badge-blue">8-pin DIP</span></td>
+        </tr>
+        <tr>
+          <td><strong>D1</strong></td>
+          <td>LED 5mm</td>
+          <td><code>LED0</code> or <code>LED</code><br><span style="color:var(--text-muted);font-size:11px">Miscellaneous Devices</span></td>
+          <td>LED-5MM</td>
+          <td>Anode (+) mark required</td>
+        </tr>
+        <tr>
+          <td><strong>M1</strong></td>
+          <td>Electret MIC</td>
+          <td><code>Microphone</code> or use<br><code>2-pin connector</code> (CON2)</td>
+          <td>MIC-9.7 or 2-pin 2.54mm</td>
+          <td>+ to pin 1 (marked)</td>
+        </tr>
+        <tr>
+          <td><strong>B1</strong></td>
+          <td>9V Battery</td>
+          <td><code>Battery</code> or<br><code>CON2</code> barrel connector</td>
+          <td>2-pin 2.54mm or barrel jack</td>
+          <td><span class="badge badge-teal">Use DC jack for PCB</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note">💡 In Altium, go to <strong>File → Open → Library</strong> and search in <em>Miscellaneous Devices.IntLib</em> for resistors, caps, LED. For BC547 and NE555 use the "Search Libraries" panel (Ctrl+L shortcut).</div>
+    <button class="ask-btn" onclick="sendPrompt('How do I search and place BC547 and NE555 components in Altium library?')">How to find BC547 / NE555 in Altium ↗</button>
+  </div>
+
+  <!-- TAB 2: NETLIST / CONNECTIONS -->
+  <div id="tab-netlist" class="tab-panel">
+    <h2>Wire Connections (Netlist)</h2>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:.875rem">Use these nets to wire your schematic. Each row = one net name and what connects to it.</p>
+    <table class="net-tbl">
+      <thead><tr><th>Net Name</th><th>Connected Pins</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>VCC (+9V)</td>
+          <td>B1(+), R1(1), R4(1), U1-Pin8, U1-Pin4 via R3</td>
+          <td>Power rail</td>
+        </tr>
+        <tr>
+          <td>GND</td>
+          <td>B1(−), M1(−/pin2), Q1-Emitter, U1-Pin1, C1(−)</td>
+          <td>Ground rail</td>
+        </tr>
+        <tr>
+          <td>MIC_OUT</td>
+          <td>M1(+/pin1), R4(2), Q1-Base</td>
+          <td>Microphone signal</td>
+        </tr>
+        <tr>
+          <td>TRIG</td>
+          <td>Q1-Collector, R3(1), U1-Pin2</td>
+          <td>555 trigger input</td>
+        </tr>
+        <tr>
+          <td>RESET_VCC</td>
+          <td>R3(2), U1-Pin4</td>
+          <td>Reset held HIGH (disabled)</td>
+        </tr>
+        <tr>
+          <td>CTRL</td>
+          <td>U1-Pin5 → GND<br><span style="font-size:11px;color:var(--text-muted)">(add 10nF cap optional)</span></td>
+          <td>Control voltage bypass</td>
+        </tr>
+        <tr>
+          <td>THRESH</td>
+          <td>U1-Pin6, U1-Pin2</td>
+          <td>Bistable: tie pin6 to pin2</td>
+        </tr>
+        <tr>
+          <td>DISCH</td>
+          <td>U1-Pin7, R1(2)</td>
+          <td>Discharge pin</td>
+        </tr>
+        <tr>
+          <td>OUT</td>
+          <td>U1-Pin3, C1(+), R2(1)</td>
+          <td>555 output</td>
+        </tr>
+        <tr>
+          <td>LED_NET</td>
+          <td>R2(2), D1(Anode)</td>
+          <td>LED drive node</td>
+        </tr>
+        <tr>
+          <td>LED_GND</td>
+          <td>D1(Cathode) → GND, C1(−) → GND</td>
+          <td>LED return path</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="warn">⚠ BC547 pinout in TO-92: standing flat-face up → Left=Collector, Center=Base, Right=Emitter. Double-check in Altium footprint before routing.</div>
+    <div class="note">📌 NE555 DIP-8 pinout: Pin1=GND, Pin2=Trigger, Pin3=Output, Pin4=Reset, Pin5=Ctrl, Pin6=Threshold, Pin7=Discharge, Pin8=VCC</div>
+    <button class="ask-btn" onclick="sendPrompt('Explain how the NE555 bistable mode works in the clap switch circuit')">How does 555 bistable work here? ↗</button>
+  </div>
+
+  <!-- TAB 3: ALTIUM STEPS -->
+  <div id="tab-steps" class="tab-panel">
+    <h2>Altium Designer — Step-by-Step Process</h2>
+
+    <div class="step-card" id="sc1">
+      <div class="step-hdr" onclick="toggleStep('sc1')">
+        <div class="step-num">1</div>
+        <div style="flex:1">
+          <div class="step-title">Create a New PCB Project</div>
+          <div class="step-subtitle">File setup · project structure</div>
+        </div>
+        <span class="chevron" id="chv-sc1">▼</span>
+      </div>
+      <div class="step-body" id="bd-sc1">
+        <ul>
+          <li>Open Altium → <code>File → New → Project → PCB Project</code></li>
+          <li>Name it <code>ClapSwitch.PrjPcb</code> → save to a folder</li>
+          <li>Right-click project → <code>Add New to Project → Schematic</code> → save as <code>ClapSwitch.SchDoc</code></li>
+          <li>Right-click project → <code>Add New to Project → PCB</code> → save as <code>ClapSwitch.PcbDoc</code></li>
+        </ul>
+        <div class="note">You will now see 3 files in Projects panel: .PrjPcb, .SchDoc, .PcbDoc</div>
+      </div>
+    </div>
+
+    <div class="step-card" id="sc2">
+      <div class="step-hdr" onclick="toggleStep('sc2')">
+        <div class="step-num">2</div>
+        <div style="flex:1">
+          <div class="step-title">Place Components on Schematic</div>
+          <div class="step-subtitle">Library search · designators</div>
+        </div>
+        <span class="chevron" id="chv-sc2">▼</span>
+      </div>
+      <div class="step-body" id="bd-sc2">
+        <ul>
+          <li>Open .SchDoc file. Press <code>P</code> → <code>Part</code> (or use Place → Part)</li>
+          <li>Search <code>Res2</code> in Miscellaneous Devices → place R1, R2, R3, R4 (set values in Properties)</li>
+          <li>Search <code>Cap Pol2</code> → place C1 (10µF)</li>
+          <li>Search <code>BC547</code> or <code>NPN</code> → place Q1</li>
+          <li>Search <code>NE555</code> or <code>LM555CN</code> → place U1</li>
+          <li>Search <code>LED</code> → place D1. Search <code>Battery</code> → place B1</li>
+          <li>For MIC, use a 2-pin connector (<code>CON2</code>) or search <code>Microphone</code></li>
+          <li>Assign designators (R1, R2...) and values in component Properties panel</li>
+        </ul>
+        <div class="note">Shortcut: Press <code>Ctrl+L</code> to open Library Search panel instantly</div>
+      </div>
+    </div>
+
+    <div class="step-card" id="sc3">
+      <div class="step-hdr" onclick="toggleStep('sc3')">
+        <div class="step-num">3</div>
+        <div style="flex:1">
+          <div class="step-title">Wire the Schematic</div>
+          <div class="step-subtitle">Connections · power ports · net labels</div>
+        </div>
+        <span class="chevron" id="chv-sc3">▼</span>
+      </div>
+      <div class="step-body" id="bd-sc3">
+        <ul>
+          <li>Press <code>P → W</code> (Place Wire) to draw connections between pins</li>
+          <li>Add VCC power port: <code>Place → Power Port</code> → type <code>VCC</code>, place on all +9V nodes</li>
+          <li>Add GND power port: same way, type <code>GND</code>, place on all ground pins</li>
+          <li>Use <code>Net Labels</code> (Place → Net Label or <code>P → N</code>) for long wires — e.g. label <code>TRIG</code> at Q1 collector and U1 pin2</li>
+          <li>Connect R4(1)→VCC, R4(2)→M1(+)→Q1-Base</li>
+          <li>Connect Q1-Collector → R3 → NE555 Pin2 and Pin4</li>
+          <li>Connect U1-Pin8 → VCC; U1-Pin1 → GND</li>
+          <li>Connect U1-Pin6 to U1-Pin2 (bistable: threshold = trigger)</li>
+          <li>Connect U1-Pin3 (output) → C1(+) and → R2 → D1-Anode → GND</li>
+          <li>Connect R1 between VCC and U1-Pin7</li>
+        </ul>
+        <div class="warn">⚠ NE555 Pin5 (Control) → connect a 0.01µF (10nF) cap to GND. Even if not in original schematic, it's good practice to filter noise.</div>
+      </div>
+    </div>
+
+    <div class="step-card" id="sc4">
+      <div class="step-hdr" onclick="toggleStep('sc4')">
+        <div class="step-num">4</div>
+        <div style="flex:1">
+          <div class="step-title">Run ERC (Electrical Rules Check)</div>
+          <div class="step-subtitle">Find wiring errors before PCB</div>
+        </div>
+        <span class="chevron" id="chv-sc4">▼</span>
+      </div>
+      <div class="step-body" id="bd-sc4">
+        <ul>
+          <li>Go to <code>Project → Compile PCB Project</code> (or press <code>Ctrl+Shift+C</code>)</li>
+          <li>Then go to <code>Design → Electrical Rules Check</code></li>
+          <li>Check the Messages panel — fix any errors (unconnected pins, missing VCC/GND)</li>
+          <li>Common error: "Pin not connected" on U1-Pin5 → add the 10nF cap or a no-connect marker</li>
+          <li>No-Connect marker: <code>Place → No ERC Marker</code> (use <code>P → E</code>) on unused pins</li>
+        </ul>
+        <div class="note">Warning (orange) is OK to ignore sometimes. Error (red) must be fixed before moving to PCB.</div>
+      </div>
+    </div>
+
+    <div class="step-card" id="sc5">
+      <div class="step-hdr" onclick="toggleStep('sc5')">
+        <div class="step-num">5</div>
+        <div style="flex:1">
+          <div class="step-title">Transfer Schematic to PCB</div>
+          <div class="step-subtitle">Import netlist · sync components</div>
+        </div>
+        <span class="chevron" id="chv-sc5">▼</span>
+      </div>
+      <div class="step-body" id="bd-sc5">
+        <ul>
+          <li>In schematic, go to <code>Design → Update PCB Document (ClapSwitch.PcbDoc)</code></li>
+          <li>The Engineering Change Order (ECO) dialog opens — click <code>Validate Changes</code> first</li>
+          <li>All rows must show green tick ✓ — fix errors if any</li>
+          <li>Click <code>Execute Changes</code> → components appear in PCB editor</li>
+          <li>Switch to .PcbDoc → you'll see all 10 components in a cluster outside the board outline</li>
+        </ul>
+        <div class="note">If components don't appear, check that .SchDoc and .PcbDoc are both in the same .PrjPcb project</div>
+      </div>
+    </div>
+
+    <div class="step-card" id="sc6">
+      <div class="step-hdr" onclick="toggleStep('sc6')">
+        <div class="step-num">6</div>
+        <div style="flex:1">
+          <div class="step-title">Set Board Outline &amp; Arrange Components</div>
+          <div class="step-subtitle">Board shape · placement strategy</div>
+        </div>
+        <span class="chevron" id="chv-sc6">▼</span>
+      </div>
+      <div class="step-body" id="bd-sc6">
+        <ul>
+          <li>Switch to <code>Mechanical 1</code> or <code>Board Shape</code> layer → draw board outline with Place → Line (suggest: 60mm × 40mm for this circuit)</li>
+          <li>Or: <code>Design → Board Shape → Define from Selected Objects</code></li>
+          <li>Drag components inside the board: B1 (battery/connector) at edge, MIC at edge (for accessibility)</li>
+          <li>Place U1 (NE555) in the center of the board</li>
+          <li>Place Q1 near MIC/R4 side, LED D1 near board edge</li>
+          <li>Place R1, R2, R3, R4 near their connected ICs — reduce trace length</li>
+          <li>Place C1 near U1 output pin (pin3)</li>
+          <li>Turn on <code>View → Ratsnest</code> (thin lines show connections) — arrange to minimize crossing ratsnest lines</li>
+        </ul>
+        <div class="note">Rule of thumb: Input side (MIC, Q1) on left. NE555 in center. Output (LED, C1) on right.</div>
+      </div>
+    </div>
+
+    <div class="step-card" id="sc7">
+      <div class="step-hdr" onclick="toggleStep('sc7')">
+        <div class="step-num">7</div>
+        <div style="flex:1">
+          <div class="step-title">Route Traces (Copper Tracks)</div>
+          <div class="step-subtitle">Manual routing · track widths</div>
+        </div>
+        <span class="chevron" id="chv-sc7">▼</span>
+      </div>
+      <div class="step-body" id="bd-sc7">
+        <ul>
+          <li>Press <code>U → A</code> (Interactive Router) or <code>Place → Interactive Routing</code></li>
+          <li>Set track widths: Power traces (VCC, GND) = <code>0.5mm</code>, Signal traces = <code>0.25mm</code></li>
+          <li>Route on <code>Top Layer</code> (red) for most signals. Use <code>Bottom Layer</code> (blue) if needed to avoid crossing</li>
+          <li>Route GND first as a <strong>polygon pour</strong>: <code>Place → Polygon Pour</code> on Bottom Layer → connect to GND net → flood fills entire board with copper GND plane</li>
+          <li>After polygon pour, press <code>T → G → R</code> (Repour All) to update</li>
+          <li>Double-click track mid-route to add vias when switching layers</li>
+          <li>Avoid 90° bends — use 45° angles (Altium does this automatically in interactive mode)</li>
+        </ul>
+        <div class="warn">⚠ Keep MIC signal trace (MIC_OUT) as short as possible and away from noisy power traces to reduce false triggers.</div>
+      </div>
+    </div>
+
+    <div class="step-card" id="sc8">
+      <div class="step-hdr" onclick="toggleStep('sc8')">
+        <div class="step-num">8</div>
+        <div style="flex:1">
+          <div class="step-title">DRC Check &amp; Gerber Export</div>
+          <div class="step-subtitle">Final check · production files</div>
+        </div>
+        <span class="chevron" id="chv-sc8">▼</span>
+      </div>
+      <div class="step-body" id="bd-sc8">
+        <ul>
+          <li>Run <code>Tools → Design Rule Check (DRC)</code> — must have 0 errors</li>
+          <li>Common DRC errors: clearance violation (move traces apart), unrouted net (finish routing), short circuit (delete overlapping track)</li>
+          <li>To export Gerbers: <code>File → Fabrication Outputs → Gerber Files</code></li>
+          <li>Select layers: Top Copper, Bottom Copper, Top Silkscreen, Top Soldermask, Bottom Soldermask, Board Outline (Edge Cuts)</li>
+          <li>Also export: <code>File → Fabrication Outputs → NC Drill Files</code> (for drill holes)</li>
+          <li>Zip all Gerber files and send to PCB manufacturer (JLCPCB, PCBWay, etc.)</li>
+        </ul>
+        <div class="note">✅ Final checklist before Gerber: All pads have correct footprint → All nets fully routed → Silkscreen labels visible → Board outline closed on Mechanical/Edge layer</div>
+        <button class="ask-btn" onclick="sendPrompt('What are the exact Gerber layer settings to export from Altium for JLCPCB?')">Gerber settings for JLCPCB ↗</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: PCB LAYERS -->
+  <div id="tab-layers" class="tab-panel">
+    <h2>Important PCB Layers in Altium</h2>
+    <div style="margin-bottom:1rem">
+      <div class="layer-row">
+        <div class="layer-dot" style="background:#ff0000"></div>
+        <div style="flex:1;font-size:13px"><strong>Top Layer</strong> — Top copper traces (red in Altium)</div>
+        <span class="badge badge-red">Signal routing</span>
+      </div>
+      <div class="layer-row">
+        <div class="layer-dot" style="background:#0000ff"></div>
+        <div style="flex:1;font-size:13px"><strong>Bottom Layer</strong> — Bottom copper / GND pour (blue)</div>
+        <span class="badge badge-blue">GND plane</span>
+      </div>
+      <div class="layer-row">
+        <div class="layer-dot" style="background:#ffff00"></div>
+        <div style="flex:1;font-size:13px"><strong>Top Silkscreen</strong> — Component labels, RefDes (yellow)</div>
+        <span class="badge badge-amber">Labels</span>
+      </div>
+      <div class="layer-row">
+        <div class="layer-dot" style="background:#7f00ff"></div>
+        <div style="flex:1;font-size:13px"><strong>Top Solder Mask</strong> — Exposes pads for soldering (purple)</div>
+        <span class="badge badge-gray">Mask</span>
+      </div>
+      <div class="layer-row">
+        <div class="layer-dot" style="background:#ffaa00"></div>
+        <div style="flex:1;font-size:13px"><strong>Mechanical 1</strong> — Board outline / Edge Cuts</div>
+        <span class="badge badge-amber">Board shape</span>
+      </div>
+      <div class="layer-row">
+        <div class="layer-dot" style="background:#00aaff"></div>
+        <div style="flex:1;font-size:13px"><strong>Drill Layer</strong> — Via and through-hole drill holes</div>
+        <span class="badge badge-blue">Holes</span>
+      </div>
+    </div>
+
+    <h2>Suggested Design Rules for Beginners</h2>
+    <table>
+      <thead><tr><th>Rule</th><th>Recommended Value</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Min clearance</td><td>0.2 mm</td><td>Most fabs support ≥0.15mm; 0.2 is safe</td></tr>
+        <tr><td>Signal track width</td><td>0.25 mm</td><td>Standard for low-current signal</td></tr>
+        <tr><td>Power track width</td><td>0.5 mm</td><td>For VCC/GND traces</td></tr>
+        <tr><td>Via diameter</td><td>0.8 mm / 0.4mm drill</td><td>Standard through-hole via</td></tr>
+        <tr><td>Min hole size</td><td>0.3 mm</td><td>JLCPCB minimum is 0.3mm</td></tr>
+        <tr><td>Board outline</td><td>Closed rectangle</td><td>Must be complete closed shape</td></tr>
+      </tbody>
+    </table>
+    <div class="note">Set rules at: <code>Design → Rules → Design Rules</code> → Electrical → Clearance, Routing → Width</div>
+    <button class="ask-btn" onclick="sendPrompt('How do I set up design rules in Altium for a beginner PCB project?')">How to set Design Rules ↗</button>
+  </div>
+</div>
+
+<script>
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+function toggleStep(id) {
+  const body = document.getElementById('bd-' + id);
+  const chv = document.getElementById('chv-' + id);
+  const open = body.classList.toggle('open');
+  chv.textContent = open ? '▲' : '▼';
+}
+</script>
